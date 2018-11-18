@@ -43,3 +43,21 @@ Result:
 #### Predict mean ####
 
 #### Predict covariance ####
+
+
+#### Step4: Magnetometer update
+
+First I updated `QYawStd` parameter to value 0.07, so it would approximately captures the magnitude of the drift.
+
+I then implemented magnetometer update step using formulas from `Estimation for Quadrotors` chapter `7.3.2 Magnetometer`:
+
+![magnetometer formulas measurement](./images/magnetometer-formulas1.png)
+
+![magnetometer update](./images/magnetometer-formulas2.png)
+
+I also normalized the difference between measured and estimated yaw. 
+
+This was the result I got:
+
+![magnetometer update](./images/magnetometer.png)
+
