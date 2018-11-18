@@ -47,7 +47,7 @@ Result:
 
 #### Step4: Magnetometer update
 
-First I updated `QYawStd` parameter to value 0.07, so it would approximately captures the magnitude of the drift.
+First I updated `QYawStd` parameter to value `0.07`, so it would approximately captures the magnitude of the drift.
 
 I then implemented magnetometer update step using formulas from `Estimation for Quadrotors` chapter `7.3.2 Magnetometer`:
 
