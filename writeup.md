@@ -122,6 +122,28 @@ This was the result I got:
 
 ### Step 5: Closed Loop + GPS Update ###
 
+I tuned the process noise model and implemented GPS update step using formulas from `Estimation for Quadrotors` chapter `7.3.1 GPS`.
+
+h prime is basically identity matrix, without last row as GPS doesn't have orientation, just direction of travel:
+
+```c++
+hPrime(0, 0) = 1;
+hPrime(1, 1) = 1;
+hPrime(2, 2) = 1;
+hPrime(3, 3) = 1;
+hPrime(4, 4) = 1;
+hPrime(5, 5) = 1;
+```
+
+I then calculated measurement prediction:
+
+```c++
+zFromX = hPrime * ekfState;
+```
+
+This was the result:
+![gps update](./images/gps-update.png)
+
 ### Step 6: Adding you controller
 
 Replaced `QuadController.cpp` and `QuadControlParams.txt` and run scenario `11_GPSUpdate`. Surprisingly quad flied within 
