@@ -173,7 +173,7 @@ VectorXf QuadEstimatorEKF::PredictState(VectorXf curState, float dt, V3F accel, 
     V3F accelInertia = attitude.Rotate_BtoI(accel);
     predictedState(3) = curState(3) + dt * accelInertia.x; // x_dot
     predictedState(4) = curState(4) + dt * accelInertia.y; // y_dot
-    predictedState(5) = curState(5) + dt * accelInertia.z; // z_dot // todo: should we subtract g (9.81)?
+    predictedState(5) = curState(5) + dt * accelInertia.z - dt * CONST_GRAVITY; // z_dot
 
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
@@ -295,6 +295,15 @@ void QuadEstimatorEKF::UpdateFromGPS(V3F pos, V3F vel)
   //  - this is a very simple update
   ////////////////////////////// BEGIN STUDENT CODE ///////////////////////////
 
+    hPrime(0, 0) = 1;
+    hPrime(1, 1) = 1;
+    hPrime(2, 2) = 1;
+    hPrime(3, 3) = 1;
+    hPrime(4, 4) = 1;
+    hPrime(5, 5) = 1;
+    
+    zFromX = hPrime * ekfState;
+    
   /////////////////////////////// END STUDENT CODE ////////////////////////////
 
   Update(z, hPrime, R_GPS, zFromX);
