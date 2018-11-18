@@ -37,3 +37,9 @@ ekfState(6) = attitude_update.Yaw();
 Result:
 
 ![scenario 7](./images/Scenario7.png)
+
+### Step 3: Prediction step
+
+#### Predict mean ####
+
+#### Predict covariance ####
