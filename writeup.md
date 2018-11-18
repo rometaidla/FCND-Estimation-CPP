@@ -45,7 +45,7 @@ Result:
 #### Predict covariance ####
 
 
-#### Step4: Magnetometer update
+### Step4: Magnetometer update ###
 
 First I updated `QYawStd` parameter to value `0.07`, so it would approximately captures the magnitude of the drift.
 
@@ -61,3 +61,17 @@ This was the result I got:
 
 ![magnetometer update](./images/magnetometer.png)
 
+
+### Step 6: Adding you controller
+
+Replaced `QuadController.cpp` and `QuadControlParams.txt` and run scenario `11_GPSUpdate`. Surprisingly quad flied within 
+allowed error limits without needed any de-tuning. Although the flight path was a little bit chaotic:
+
+Result:
+
+![custom controller](./images/custom-controller.png)
+
+```
+Simulation #4 (../config/11_GPSUpdate.txt)
+PASS: ABS(Quad.Est.E.Pos) was less than 1.000000 for at least 20.000000 seconds
+```
