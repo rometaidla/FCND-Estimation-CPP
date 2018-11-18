@@ -17,3 +17,5 @@ Result:
 GPS std:  0.704375122559
 ACC std:  0.509920269748
 ```
+
+![scenario 6](./images/Scenario6.png)
