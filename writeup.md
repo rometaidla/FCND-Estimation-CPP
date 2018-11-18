@@ -1,6 +1,6 @@
 ### Step 1: Sensor Noise ###
 
-Used python and numpy to calculate standard deviations:
+Used python and numpy to calculate standard deviations ([scenario6.py](scenario6.py)):
 
 ```python
 import numpy as np
