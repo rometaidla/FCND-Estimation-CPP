@@ -55,8 +55,8 @@ To integrate velocity, I converted accelerations from body frame to inertia fram
 V3F accelInertia = attitude.Rotate_BtoI(accel);
 ```
 
-```c++
 and then by integrated velocity by timestep `dt`:
+```c++
 predictedState(3) = curState(3) + dt * accelInertia.x; // x_dot
 predictedState(4) = curState(4) + dt * accelInertia.y; // y_dot
 predictedState(5) = curState(5) + dt * accelInertia.z - dt * CONST_GRAVITY; // z_dot
@@ -74,7 +74,7 @@ Simulation #10 (../config/08_PredictState.txt)
 #### Predict covariance ####
 
 First thing was to create partial derivative of the body-to-global rotation matrix, which I just
-defining formula `52` from `Estimation for Quadrotors` chapter `7.2 Transition model` f
+defining formula `52` from `Estimation for Quadrotors` chapter `7.2 Transition model`:
 ```c++
 RbgPrime(0, 0) = -cos(theta)*sin(psi);
 RbgPrime(0, 1) = -sin(phi)*sin(theta)*sin(psi)-cos(phi)*cos(psi);
@@ -101,6 +101,7 @@ ekfCov = gPrime * ekfCov * gPrime.transpose() + Q;
 ```
 
 Result was this:
+
 ![covariance](./images/covariance.png)
 
 ### Step4: Magnetometer update ###
