@@ -142,6 +142,7 @@ zFromX = hPrime * ekfState;
 ```
 
 This was the result:
+
 ![gps update](./images/gps-update.png)
 
 ### Step 6: Adding you controller
