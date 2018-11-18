@@ -1,6 +1,6 @@
 ### Step 1: Sensor Noise ###
 
-Used python and numpy to calculate standard deviations ([scenario6.py](scenario6.py)):
+I used python and numpy to calculate standard deviations ([scenario6.py](scenario6.py)):
 
 ```python
 import numpy as np
@@ -19,3 +19,21 @@ ACC std:  0.509920269748
 ```
 
 ![scenario 6](./images/Scenario6.png)
+
+### Step 2: Attitude estimation ###
+
+I used `Quaternion<float>` class `FromEuler123_RPY()` for creating quaternion from Euler Roll/Pitch/Yaw
+and then used `IntegrateBodyRate()` to get updated attitude.
+
+```c++
+Quaternion<float> attitude = Quaternion<float>::FromEuler123_RPY(rollEst, pitchEst, ekfState(6));
+Quaternion<float> attitude_update = attitude.IntegrateBodyRate(gyro, dtIMU);
+
+float predictedPitch = attitude_update.Pitch();
+float predictedRoll = attitude_update.Roll();
+ekfState(6) = attitude_update.Yaw();
+```
+
+Result:
+
+![scenario 7](./images/Scenario7.png)
