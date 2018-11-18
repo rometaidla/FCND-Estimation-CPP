@@ -42,12 +42,70 @@ Result:
 
 #### Predict mean ####
 
+I integrate position forward by timestep `dt`:
+
+```c++
+predictedState(0) = curState(0) + dt * curState(3); // x
+predictedState(1) = curState(1) + dt * curState(4); // y
+predictedState(2) = curState(2) + dt * curState(5); // z
+```
+
+To integrate velocity, I converted accelerations from body frame to inertia frame:
+```c++
+V3F accelInertia = attitude.Rotate_BtoI(accel);
+```
+
+```c++
+and then by integrated velocity by timestep `dt`:
+predictedState(3) = curState(3) + dt * accelInertia.x; // x_dot
+predictedState(4) = curState(4) + dt * accelInertia.y; // y_dot
+predictedState(5) = curState(5) + dt * accelInertia.z - dt * CONST_GRAVITY; // z_dot
+```
+
+Result:
+
+![predict state](./images/predict_state.png)
+
+```
+PASS: ABS(Quad.Est.E.MaxEuler) was less than 0.100000 for at least 3.000000 seconds
+Simulation #10 (../config/08_PredictState.txt)
+```
+
 #### Predict covariance ####
 
+First thing was to create partial derivative of the body-to-global rotation matrix, which I just
+defining formula `52` from `Estimation for Quadrotors` chapter `7.2 Transition model` f
+```c++
+RbgPrime(0, 0) = -cos(theta)*sin(psi);
+RbgPrime(0, 1) = -sin(phi)*sin(theta)*sin(psi)-cos(phi)*cos(psi);
+RbgPrime(0, 2) = -cos(phi)*sin(theta)*sin(psi)+sin(phi)*cos(psi);
+
+RbgPrime(1, 0) = cos(theta)*cos(psi);
+RbgPrime(1, 1) = sin(phi)*sin(theta)*cos(psi)-cos(phi)*cos(psi);
+RbgPrime(1, 2) = cos(phi)*sin(theta)*sin(psi)+sin(phi)*cos(psi);
+```
+
+Then I implemented predict function by creating Jacobian:
+```c++
+gPrime(0,3) = dt;
+gPrime(1,4) = dt;
+gPrime(2,5) = dt;
+gPrime(3, 6) = (RbgPrime(0) * accel).sum() * dt;
+gPrime(4, 6) = (RbgPrime(1) * accel).sum() * dt;
+gPrime(5, 6) = (RbgPrime(2) * accel).sum() * dt;
+```
+
+and updated covariance:
+```c++
+ekfCov = gPrime * ekfCov * gPrime.transpose() + Q;
+```
+
+Result was this:
+![covariance](./images/covariance.png)
 
 ### Step4: Magnetometer update ###
 
-First I updated `QYawStd` parameter to value `0.07`, so it would approximately captures the magnitude of the drift.
+First I updated Step 5: Closed Loop + GPS UpdateQYawStd` parameter to value `0.07`, so it would approximately captures the magnitude of the drift.
 
 I then implemented magnetometer update step using formulas from `Estimation for Quadrotors` chapter `7.3.2 Magnetometer`:
 
@@ -61,15 +119,17 @@ This was the result I got:
 
 ![magnetometer update](./images/magnetometer.png)
 
+### Step 5: Closed Loop + GPS Update ###
 
 ### Step 6: Adding you controller
 
 Replaced `QuadController.cpp` and `QuadControlParams.txt` and run scenario `11_GPSUpdate`. Surprisingly quad flied within 
 allowed error limits without needed any de-tuning. Although the flight path was a little bit chaotic:
 
-Result:
 
 ![custom controller](./images/custom-controller.png)
+
+Result:
 
 ```
 Simulation #4 (../config/11_GPSUpdate.txt)
