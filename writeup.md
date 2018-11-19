@@ -120,6 +120,12 @@ This was the result I got:
 
 ![magnetometer update](./images/magnetometer.png)
 
+```
+Simulation #2 (../config/10_MagUpdate.txt)
+PASS: ABS(Quad.Est.E.Yaw) was less than 0.120000 for at least 10.000000 seconds
+PASS: ABS(Quad.Est.E.Yaw-0.000000) was less than Quad.Est.S.Yaw for 68% of the time
+```
+
 ### Step 5: Closed Loop + GPS Update ###
 
 I tuned the process noise model and implemented GPS update step using formulas from `Estimation for Quadrotors` chapter `7.3.1 GPS`.
